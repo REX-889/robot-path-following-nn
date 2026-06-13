@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.idea/
+training_history*.csv
+training_loss*.png
+*_test.pt
