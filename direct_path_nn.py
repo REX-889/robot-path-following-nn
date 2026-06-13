@@ -191,10 +191,6 @@ class DirectVoltagePathGRU(nn.Module):
         return output, hidden
 
 
-# Alias dla starszych importow w skryptach treningowych.
-DirectVoltagePathMLP = DirectVoltagePathGRU
-
-
 @dataclass
 class DirectNNVoltageController:
     # Regulator w 100% neuronowy w czasie jazdy.

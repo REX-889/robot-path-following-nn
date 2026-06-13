@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 from math import cos, sin, tanh
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Tuple
 
 
 State = Tuple[float, float, float, float, float]
 Vector2 = Tuple[float, float]
-VoltageInput = Union[Vector2, Callable[[float, State], Vector2]]
 
 
 @dataclass(frozen=True)
@@ -171,29 +170,3 @@ def rk4_step(
     k4 = derivatives(t + dt, add_scaled(state, k3, dt), voltage, p)
 
     return tuple(state[i] + dt * (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]) / 6.0 for i in range(len(state)))
-
-
-def simulate(
-    duration: float,
-    dt: float,
-    voltage: VoltageInput,
-    initial_state: State = (0.0, 0.0, 0.0, 0.0, 0.0),
-    params: Optional[RobotParams] = None,
-) -> List[Tuple[float, State]]:
-    # Petla symulacji.
-    # voltage moze byc:
-    # - stala krotka (U_p, U_l),
-    # - funkcja sterowania voltage(t, state), ktora zwraca (U_p, U_l).
-    p = params or RobotParams()
-    t = 0.0
-    state = initial_state
-    history = [(t, state)]
-
-    steps = int(duration / dt)
-    for _ in range(steps):
-        u_m = voltage(t, state) if callable(voltage) else voltage
-        state = rk4_step(t, state, dt, u_m, p)
-        t += dt
-        history.append((t, state))
-
-    return history

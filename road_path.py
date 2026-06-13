@@ -119,28 +119,6 @@ class RoadPath:
             s=pose.s,
         )
 
-    def reference(self, t: float, speed: float = 0.16) -> Reference:
-        # Zamiana czasu na punkt referencyjny jadacy po torze ze stala predkoscia.
-        s = speed * t
-        pose = self.sample(s)
-
-        # Predkosc katowa wynika z krzywizny toru: omega = v * kappa.
-        ds = 0.02
-        pose_before = self.sample(s - ds)
-        pose_after = self.sample(s + ds)
-        dtheta = wrap_to_pi(pose_after.theta - pose_before.theta)
-        curvature = dtheta / (2.0 * ds)
-        omega = speed * curvature
-
-        return Reference(
-            x=pose.x,
-            y=pose.y,
-            theta=pose.theta,
-            v=speed,
-            omega=omega,
-            s=pose.s,
-        )
-
     def local_preview(self, state, s: float, lookaheads):
         # Punkty toru przed robotem przeliczone do lokalnego ukladu robota.
         theta, x, y, _omega, _v = state
